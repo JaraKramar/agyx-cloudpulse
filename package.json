@@ -1,0 +1,15 @@
+{
+  "name": "web2scrape",
+  "version": "1.0.0",
+  "description": "Cloud Blog Aggregator for AWS, Azure, and GCP",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "rss-parser": "^3.13.0"
+  }
+}
