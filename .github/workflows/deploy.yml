@@ -1,0 +1,33 @@
+name: Deploy to Raspberry Pi
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy Code via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 89.29.98.70
+          port: 2222
+          username: rpi
+          key: ${{ secrets.RPI_SSH_KEY }}
+          script: |
+            # Source Node.js bin in PATH
+            export PATH="$HOME/node/bin:$PATH"
+            
+            # Navigate to project and pull latest changes
+            cd ~/agyx-cloudpulse
+            git pull origin main
+            
+            # Install new production dependencies
+            npm install --production
+            
+            # Restart or start the PM2 service
+            pm2 restart cloudpulse || pm2 start server.js --name cloudpulse
+            pm2 save
