@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CloudPulse - Multi-Cloud Blog Aggregator</title>
+  <title>CloudPulse - Multi-Cloud Blog Aggregator & AI Chat</title>
   <meta name="description" content="Stay updated with the latest news and updates from AWS, Microsoft Azure, and Google Cloud Platform blogs in a single, premium dashboard.">
   
   <!-- Fonts -->
@@ -32,18 +32,31 @@
         <span class="logo-text">Cloud<span class="logo-accent">Pulse</span></span>
       </div>
 
-      <div class="search-container">
-        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-        <input type="text" id="searchInput" placeholder="Search across cloud blogs..." aria-label="Search articles">
-        <button id="clearSearch" class="clear-search-btn" title="Clear Search" aria-label="Clear Search">&times;</button>
-      </div>
+      <!-- Navigation Tabs -->
+      <nav class="nav-tabs" aria-label="Main Navigation">
+        <button class="nav-tab active" data-panel="blogs" id="navTabBlogs">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <path d="M16 2v4M8 2v4M2 10h20"></path>
+          </svg>
+          <span>Articles</span>
+        </button>
+        <button class="nav-tab" data-panel="sources" id="navTabSources">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+          </svg>
+          <span>Sources</span>
+        </button>
+        <button class="nav-tab" data-panel="chat" id="navTabChat">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+          <span>Cloud AI Chat</span>
+        </button>
+      </nav>
 
       <div class="actions">
         <button id="themeToggle" class="theme-toggle-btn" title="Toggle Light/Dark Mode" aria-label="Toggle theme">
-          <!-- Sun Icon -->
           <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="5"></circle>
             <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -55,7 +68,6 @@
             <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
             <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
           </svg>
-          <!-- Moon Icon -->
           <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
           </svg>
@@ -64,186 +76,271 @@
     </div>
   </header>
 
-  <!-- Main Content -->
+  <!-- Main Content Area -->
   <main class="container main-content">
-    
-    <!-- Stats / Analytics Section -->
-    <section class="stats-section">
-      <div class="stats-grid">
-        <div class="stat-card glass-panel" id="statTotal">
-          <div class="stat-icon-wrapper blue">
-            <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-            </svg>
-          </div>
-          <div class="stat-info">
-            <span class="stat-label">Total Articles</span>
-            <h3 class="stat-val" id="totalCount">0</h3>
-          </div>
-        </div>
 
-        <div class="stat-card glass-panel" id="statNew">
-          <div class="stat-icon-wrapper green">
-            <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-              <polyline points="2 17 12 22 22 17"></polyline>
-              <polyline points="2 12 12 17 22 12"></polyline>
-            </svg>
+    <!-- PANEL 1: ARTICLES VIEW -->
+    <div id="panelBlogs" class="tab-panel active">
+      
+      <!-- Stats Dashboard -->
+      <section class="stats-section">
+        <div class="stats-grid">
+          <div class="stat-card glass-panel" id="statTotal">
+            <div class="stat-icon-wrapper blue">
+              <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Total Articles</span>
+              <h3 class="stat-val" id="totalCount">0</h3>
+            </div>
           </div>
-          <div class="stat-info">
-            <span class="stat-label">New (Last 48h)</span>
-            <h3 class="stat-val" id="newCount">0</h3>
-          </div>
-        </div>
 
-        <div class="stat-card glass-panel" id="statRatio">
-          <div class="stat-info-wide">
-            <span class="stat-label">Provider Distribution</span>
-            <div class="distribution-bars">
-              <div class="dist-item" title="AWS">
-                <span class="dist-name">AWS</span>
-                <div class="dist-bar-bg"><div class="dist-bar aws" id="awsDistBar" style="width: 0%"></div></div>
-                <span class="dist-pct" id="awsDistPct">0%</span>
-              </div>
-              <div class="dist-item" title="Azure">
-                <span class="dist-name">Azure</span>
-                <div class="dist-bar-bg"><div class="dist-bar azure" id="azureDistBar" style="width: 0%"></div></div>
-                <span class="dist-pct" id="azureDistPct">0%</span>
-              </div>
-              <div class="dist-item" title="GCP">
-                <span class="dist-name">GCP</span>
-                <div class="dist-bar-bg"><div class="dist-bar gcp" id="gcpDistBar" style="width: 0%"></div></div>
-                <span class="dist-pct" id="gcpDistPct">0%</span>
+          <div class="stat-card glass-panel" id="statNew">
+            <div class="stat-icon-wrapper green">
+              <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                <polyline points="2 17 12 22 22 17"></polyline>
+                <polyline points="2 12 12 17 22 12"></polyline>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">New (Last 48h)</span>
+              <h3 class="stat-val" id="newCount">0</h3>
+            </div>
+          </div>
+
+          <div class="stat-card glass-panel" id="statRatio">
+            <div class="stat-info-wide">
+              <span class="stat-label">Provider Distribution</span>
+              <div class="distribution-bars">
+                <div class="dist-item" title="AWS">
+                  <span class="dist-name">AWS</span>
+                  <div class="dist-bar-bg"><div class="dist-bar aws" id="awsDistBar" style="width: 0%"></div></div>
+                  <span class="dist-pct" id="awsDistPct">0%</span>
+                </div>
+                <div class="dist-item" title="Azure">
+                  <span class="dist-name">Azure</span>
+                  <div class="dist-bar-bg"><div class="dist-bar azure" id="azureDistBar" style="width: 0%"></div></div>
+                  <span class="dist-pct" id="azureDistPct">0%</span>
+                </div>
+                <div class="dist-item" title="GCP">
+                  <span class="dist-name">GCP</span>
+                  <div class="dist-bar-bg"><div class="dist-bar gcp" id="gcpDistBar" style="width: 0%"></div></div>
+                  <span class="dist-pct" id="gcpDistPct">0%</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="stat-card glass-panel" id="statCache">
-          <div class="stat-icon-wrapper purple">
-            <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
-            </svg>
-          </div>
-          <div class="stat-info">
-            <span class="stat-label">Cache Updated</span>
-            <h3 class="stat-val-sm" id="cacheTime">--:--</h3>
-            <button id="refreshBtn" class="refresh-btn">
-              <span>Refresh Feed</span>
-              <svg class="refresh-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <div class="stat-card glass-panel" id="statCache">
+            <div class="stat-icon-wrapper purple">
+              <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
               </svg>
-            </button>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Last Aggregated</span>
+              <h3 class="stat-val-sm" id="cacheTime">--:--</h3>
+              <button id="refreshBtn" class="refresh-btn">
+                <span>Sync Feeds</span>
+                <svg class="refresh-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Toolbar Search & Filter -->
+      <section class="toolbar-section">
+        <div class="search-container">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="searchInput" placeholder="Search blog index..." aria-label="Search articles">
+          <button id="clearSearch" class="clear-search-btn" title="Clear Search" aria-label="Clear Search">&times;</button>
+        </div>
+
+        <div class="filter-tabs">
+          <button class="tab-btn active" data-provider="all" id="tab-all">
+            <span>All Platforms</span>
+          </button>
+          <button class="tab-btn" data-provider="AWS" id="tab-aws">
+            <span class="provider-color-dot aws"></span>
+            <span>AWS</span>
+          </button>
+          <button class="tab-btn" data-provider="Azure" id="tab-azure">
+            <span class="provider-color-dot azure"></span>
+            <span>Azure</span>
+          </button>
+          <button class="tab-btn" data-provider="GCP" id="tab-gcp">
+            <span class="provider-color-dot gcp"></span>
+            <span>Google Cloud</span>
+          </button>
+        </div>
+
+        <div class="sort-container">
+          <label for="sortSelect">Sort:</label>
+          <select id="sortSelect" class="sort-select">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="title">Alphabetical</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- Active Filters Display -->
+      <div id="activeFilters" class="active-filters-container hidden">
+        <span class="filter-text">Active Tag Filter:</span>
+        <div class="filter-tags-list" id="activeTagsList"></div>
+        <button id="clearFiltersBtn" class="clear-filters-btn">Clear all</button>
+      </div>
+
+      <!-- Articles Grid -->
+      <section class="articles-grid-container">
+        <div class="articles-grid" id="articlesGrid"></div>
+        
+        <!-- Empty state -->
+        <div id="emptyState" class="empty-state hidden">
+          <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="8" y1="12" x2="16" y2="12"></line>
+          </svg>
+          <h3>No Articles Found</h3>
+          <p>No matching posts found. Modify your keywords or reset active filters.</p>
+          <button id="resetFiltersBtn" class="primary-btn">Reset Filters</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- PANEL 2: MANAGE SOURCES VIEW -->
+    <div id="panelSources" class="tab-panel hidden">
+      <div class="sources-layout">
+        <!-- Add Source Form -->
+        <div class="glass-panel form-card">
+          <h3 class="panel-heading">Add New Source</h3>
+          <form id="addSourceForm" class="source-form">
+            <div class="form-group">
+              <label for="sourceName">Name / Title</label>
+              <input type="text" id="sourceName" placeholder="e.g. AWS Security Blog" required>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="sourceProvider">Cloud Provider</label>
+                <select id="sourceProvider" class="form-select" required>
+                  <option value="AWS">AWS</option>
+                  <option value="Azure">Azure</option>
+                  <option value="GCP">Google Cloud (GCP)</option>
+                  <option value="Other">Other / Independent</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="sourceType">Source Type</label>
+                <select id="sourceType" class="form-select" required>
+                  <option value="rss">RSS Feed (XML)</option>
+                  <option value="scrape">HTML Web Scraper</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="sourceUrl">URL Link</label>
+              <input type="url" id="sourceUrl" placeholder="https://example.com/feed.xml" required>
+            </div>
+
+            <div class="form-group hidden" id="selectorGroup">
+              <label for="sourceSelector">CSS Selector <span class="help-text">(e.g., 'article', '.post-card')</span></label>
+              <input type="text" id="sourceSelector" placeholder="article">
+            </div>
+
+            <button type="submit" class="primary-btn submit-btn">Add Source</button>
+          </form>
+        </div>
+
+        <!-- Sources List -->
+        <div class="glass-panel list-card">
+          <h3 class="panel-heading">Registered Sources</h3>
+          <div class="table-container">
+            <table class="sources-table">
+              <thead>
+                <tr>
+                  <th>Platform</th>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>URL</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="sourcesTableBody">
+                <!-- Dynmic feeds go here -->
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
-    </section>
-
-    <!-- Filters & Toolbar -->
-    <section class="toolbar-section">
-      <div class="filter-tabs">
-        <button class="tab-btn active" data-provider="all" id="tab-all">
-          <span>All Platforms</span>
-        </button>
-        <button class="tab-btn" data-provider="AWS" id="tab-aws">
-          <span class="provider-color-dot aws"></span>
-          <span>AWS</span>
-        </button>
-        <button class="tab-btn" data-provider="Azure" id="tab-azure">
-          <span class="provider-color-dot azure"></span>
-          <span>Azure</span>
-        </button>
-        <button class="tab-btn" data-provider="GCP" id="tab-gcp">
-          <span class="provider-color-dot gcp"></span>
-          <span>Google Cloud</span>
-        </button>
-      </div>
-
-      <div class="sort-container">
-        <label for="sortSelect">Sort by:</label>
-        <select id="sortSelect" class="sort-select">
-          <option value="newest">Newest First</option>
-          <option value="oldest">Oldest First</option>
-          <option value="title">Alphabetical</option>
-        </select>
-      </div>
-    </section>
-
-    <!-- Active Filters Display -->
-    <div id="activeFilters" class="active-filters-container hidden">
-      <span class="filter-text">Active Filter:</span>
-      <div class="filter-tags-list" id="activeTagsList">
-        <!-- Dynmic tags go here -->
-      </div>
-      <button id="clearFiltersBtn" class="clear-filters-btn">Clear all</button>
     </div>
 
-    <!-- Articles Grid -->
-    <section class="articles-grid-container">
-      <div class="articles-grid" id="articlesGrid">
-        <!-- Skeleton Loaders (6 cards) -->
-        <div class="card skeleton-card">
-          <div class="skeleton skeleton-provider"></div>
-          <div class="skeleton skeleton-title"></div>
-          <div class="skeleton skeleton-title short"></div>
-          <div class="skeleton skeleton-text"></div>
-          <div class="skeleton skeleton-text"></div>
-          <div class="skeleton skeleton-meta"></div>
+    <!-- PANEL 3: CLOUD AI CHAT VIEW (RAG) -->
+    <div id="panelChat" class="tab-panel hidden">
+      <div class="chat-layout">
+        <!-- Chat Area -->
+        <div class="glass-panel chat-container">
+          <div class="chat-log" id="chatLog">
+            <!-- Initial Welcome Message -->
+            <div class="chat-message assistant">
+              <div class="message-header">
+                <span class="sender-name">CloudPulse AI</span>
+                <span class="message-time">Just now</span>
+              </div>
+              <div class="message-body">
+                <p>Hello! I am CloudPulse AI. I can search across all aggregated blog posts in your local SQLite archive using RAG (Retrieval-Augmented Generation).</p>
+                <p>Try asking me things like:</p>
+                <ul>
+                  <li><em>"What are the latest AWS API Gateway updates?"</em></li>
+                  <li><em>"Summarize recent Kubernetes service updates from Azure."</em></li>
+                  <li><em>"What is new in Google Cloud AI products?"</em></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Loading status indicator -->
+          <div class="chat-status hidden" id="chatStatus">
+            <div class="pulse-loader"></div>
+            <span>Consulting cloud indexing database...</span>
+          </div>
+
+          <!-- Chat Input -->
+          <form id="chatForm" class="chat-input-form">
+            <input type="text" id="chatInput" placeholder="Ask questions about cloud updates..." autocomplete="off" required>
+            <button type="submit" class="primary-btn send-btn" id="sendBtn">
+              <span>Send</span>
+              <svg class="send-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </button>
+          </form>
         </div>
-        <div class="card skeleton-card">
-          <div class="skeleton skeleton-provider"></div>
-          <div class="skeleton skeleton-title"></div>
-          <div class="skeleton skeleton-title short"></div>
-          <div class="skeleton skeleton-text"></div>
-          <div class="skeleton skeleton-text"></div>
-          <div class="skeleton skeleton-meta"></div>
-        </div>
-        <div class="card skeleton-card">
-          <div class="skeleton skeleton-provider"></div>
-          <div class="skeleton skeleton-title"></div>
-          <div class="skeleton skeleton-title short"></div>
-          <div class="skeleton skeleton-text"></div>
-          <div class="skeleton skeleton-text"></div>
-          <div class="skeleton skeleton-meta"></div>
-        </div>
-        <div class="card skeleton-card">
-          <div class="skeleton skeleton-provider"></div>
-          <div class="skeleton skeleton-title"></div>
-          <div class="skeleton skeleton-title short"></div>
-          <div class="skeleton skeleton-text"></div>
-          <div class="skeleton skeleton-text"></div>
-          <div class="skeleton skeleton-meta"></div>
-        </div>
-        <div class="card skeleton-card">
-          <div class="skeleton skeleton-provider"></div>
-          <div class="skeleton skeleton-title"></div>
-          <div class="skeleton skeleton-title short"></div>
-          <div class="skeleton skeleton-text"></div>
-          <div class="skeleton skeleton-text"></div>
-          <div class="skeleton skeleton-meta"></div>
-        </div>
-        <div class="card skeleton-card">
-          <div class="skeleton skeleton-provider"></div>
-          <div class="skeleton skeleton-title"></div>
-          <div class="skeleton skeleton-title short"></div>
-          <div class="skeleton skeleton-text"></div>
-          <div class="skeleton skeleton-text"></div>
-          <div class="skeleton skeleton-meta"></div>
+
+        <!-- Chat Citation Sources Sidebar -->
+        <div class="glass-panel sources-sidebar" id="sourcesSidebar">
+          <h4 class="sidebar-title">Retrieved Sources</h4>
+          <p class="sidebar-help">Articles pulled from your SQLite archive to construct the response.</p>
+          <div class="sources-citation-list" id="citationList">
+            <div class="no-sources-message">No active query. Sources will populate here when you chat.</div>
+          </div>
         </div>
       </div>
-      
-      <!-- Empty state -->
-      <div id="emptyState" class="empty-state hidden">
-        <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="8" y1="12" x2="16" y2="12"></line>
-        </svg>
-        <h3>No Articles Found</h3>
-        <p>No matching blog posts found. Try adjusting your search keywords or active filters.</p>
-        <button id="resetFiltersBtn" class="primary-btn">Reset Filters</button>
-      </div>
-    </section>
+    </div>
+
   </main>
 
   <!-- Footer -->
@@ -251,7 +348,7 @@
     <div class="container footer-content">
       <p>&copy; 2026 CloudPulse. Built for multi-cloud enthusiasts.</p>
       <div class="footer-links">
-        <span class="source-info">Feeds polled: AWS News Blog, Azure Blog, Google Cloud Blog</span>
+        <span class="source-info">Persistent SQLite Database with local Cheerio scraping and Gemini RAG search</span>
       </div>
     </div>
   </footer>
