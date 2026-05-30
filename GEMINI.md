@@ -47,8 +47,9 @@ This document provides essential context for AI models interacting with this pro
 * **Main Entrypoint(s):** 
   - `server.js` (Express backend and static server)
   - `public/index.html` (Frontend client entrypoint)
+  - `update.sh` (Pull-based update script for remote environments)
 * **Configuration:** `package.json` for npm script and package definitions.
-* **CI/CD Pipeline:** None currently defined. (Inferred; Confidence level: High).
+* **CI/CD Pipeline:** Pull-based auto-deployment script (`update.sh`) triggered via cron on Raspberry Pi. (Confidence level: High).
 
 ## 6. Development & Testing Workflow
 
@@ -60,7 +61,9 @@ This document provides essential context for AI models interacting with this pro
 * **Testing:**
   - Standard JavaScript test scripts can be run via node CLI.
   - Manual verification of API feeds can be verified by running `fetch` requests directly from a Node shell or browser developer tools.
-* **CI/CD Process:** None currently defined. (Inferred; Confidence level: High).
+* **CI/CD & Deployment Process:**
+  - Local changes pushed to the `main` branch on GitHub automatically propagate to the remote Raspberry Pi.
+  - A pull-based cron job running on the Raspberry Pi checks GitHub for commit updates every 5 minutes. If updates are found, it pulls them, triggers `npm install`, and restarts the application PM2 daemon process (`cloudpulse`).
 
 ## 7. Specific Instructions for AI Collaboration
 
