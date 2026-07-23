@@ -1360,3 +1360,40 @@ body {
 }
 
 
+
+/* Add Source preview results */
+.preview-results {
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  background: var(--panel-bg);
+}
+
+.preview-msg {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.preview-item {
+  padding: 10px 0;
+  border-top: 1px solid var(--panel-border);
+  font-size: 13px;
+}
+
+.preview-item a {
+  color: var(--accent-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.preview-item .preview-date {
+  color: var(--text-muted);
+  margin-left: 8px;
+  font-size: 12px;
+}
+
+.preview-item p {
+  color: var(--text-muted);
+  margin-top: 4px;
+}

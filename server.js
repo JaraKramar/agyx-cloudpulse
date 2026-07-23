@@ -112,6 +112,7 @@ async function initDatabase() {
 // Scraper logic for custom HTML web pages
 async function scrapeHtmlPage(feed) {
   const articles = [];
+  let error = null;
   try {
     const res = await fetch(feed.url, {
       headers: {
@@ -177,15 +178,17 @@ async function scrapeHtmlPage(feed) {
         feed_id: feed.id
       });
     });
-  } catch (error) {
-    console.error(`Error scraping web page ${feed.name}:`, error.message);
+  } catch (err) {
+    error = err.message;
+    console.error(`Error scraping web page ${feed.name}:`, err.message);
   }
-  return articles;
+  return { articles, error };
 }
 
 // RSS Parser wrapper
 async function parseRssFeed(feed) {
   const articles = [];
+  let error = null;
   try {
     const response = await parser.parseURL(feed.url);
     const items = response.items || [];
@@ -242,10 +245,11 @@ async function parseRssFeed(feed) {
         feed_id: feed.id
       });
     }
-  } catch (error) {
-    console.error(`Error parsing RSS feed for ${feed.provider}:`, error.message);
+  } catch (err) {
+    error = err.message;
+    console.error(`Error parsing RSS feed for ${feed.provider}:`, err.message);
   }
-  return articles;
+  return { articles, error };
 }
 
 // Fetch all registered active feeds (RSS & scraping) and insert into db
@@ -257,9 +261,9 @@ async function refreshAllFeeds() {
   for (const feed of feeds) {
     let articles = [];
     if (feed.type === 'rss') {
-      articles = await parseRssFeed(feed);
+      ({ articles } = await parseRssFeed(feed));
     } else if (feed.type === 'scrape') {
-      articles = await scrapeHtmlPage(feed);
+      ({ articles } = await scrapeHtmlPage(feed));
     }
 
     for (const art of articles) {
@@ -348,6 +352,28 @@ app.post('/api/feeds', async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Preview a feed before saving: fetch and parse without any DB writes
+app.post('/api/feeds/preview', async (req, res) => {
+  const { url, type, selector } = req.body;
+  if (!url || !type) {
+    return res.status(400).json({ success: false, message: 'Missing url or type' });
+  }
+
+  try {
+    const feed = { id: null, name: 'Preview', url, type, selector: selector || null, provider: 'Preview' };
+    const { articles, error } = type === 'rss'
+      ? await parseRssFeed(feed)
+      : await scrapeHtmlPage(feed);
+
+    if (error) {
+      return res.json({ success: false, message: error });
+    }
+    res.json({ success: true, count: articles.length, articles: articles.slice(0, 5) });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 

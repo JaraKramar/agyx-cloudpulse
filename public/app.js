@@ -41,6 +41,8 @@ const addSourceForm = document.getElementById('addSourceForm');
 const sourceType = document.getElementById('sourceType');
 const selectorGroup = document.getElementById('selectorGroup');
 const sourcesTableBody = document.getElementById('sourcesTableBody');
+const previewSourceBtn = document.getElementById('previewSourceBtn');
+const previewResults = document.getElementById('previewResults');
 
 // Chat DOM Elements
 const chatForm = document.getElementById('chatForm');
@@ -150,6 +152,7 @@ function setupEventListeners() {
 
   // Add Source Form submit
   addSourceForm.addEventListener('submit', handleAddSource);
+  previewSourceBtn.addEventListener('click', handlePreviewSource);
 
   // Chat Form Submit (RAG)
   chatForm.addEventListener('submit', handleChatSubmit);
@@ -513,6 +516,7 @@ async function handleAddSource(e) {
     if (data.success) {
       addSourceForm.reset();
       selectorGroup.classList.add('hidden');
+      previewResults.classList.add('hidden');
       fetchFeeds();
       fetchBlogs(true); // Trigger a sync pull
     } else {
@@ -521,6 +525,66 @@ async function handleAddSource(e) {
   } catch (error) {
     console.error('Error adding source:', error);
     alert('Server communication error.');
+  }
+}
+
+// Escape text scraped from external pages before injecting into innerHTML
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+// Preview what a feed URL/selector would extract, without saving
+async function handlePreviewSource() {
+  const url = document.getElementById('sourceUrl').value.trim();
+  const type = document.getElementById('sourceType').value;
+  const selector = document.getElementById('sourceSelector').value.trim();
+
+  previewResults.classList.remove('hidden');
+
+  if (!url) {
+    previewResults.innerHTML = '<p class="preview-msg">Enter a URL first.</p>';
+    return;
+  }
+
+  previewResults.innerHTML = '<p class="preview-msg">Fetching preview…</p>';
+  previewSourceBtn.disabled = true;
+
+  try {
+    const response = await fetch('/api/feeds/preview', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url, type, selector })
+    });
+    const data = await response.json();
+
+    if (!data.success) {
+      previewResults.innerHTML = `<p class="preview-msg">Preview failed: ${escapeHtml(data.message || 'Unknown error')}</p>`;
+      return;
+    }
+
+    if (data.count === 0) {
+      const hint = type === 'scrape' ? 'check the URL and CSS selector' : 'check the URL';
+      previewResults.innerHTML = `<p class="preview-msg">0 articles matched — ${hint}.</p>`;
+      return;
+    }
+
+    previewResults.innerHTML = `
+      <p class="preview-msg">${data.count} article${data.count === 1 ? '' : 's'} found — showing first ${data.articles.length}:</p>
+      ${data.articles.map(art => `
+        <div class="preview-item">
+          <a href="${escapeHtml(art.link)}" target="_blank" rel="noopener noreferrer">${escapeHtml(art.title)}</a>
+          <span class="preview-date">${new Date(art.date).toLocaleDateString()}</span>
+          <p>${escapeHtml(art.snippet || '')}</p>
+        </div>
+      `).join('')}
+    `;
+  } catch (error) {
+    console.error('Error previewing source:', error);
+    previewResults.innerHTML = '<p class="preview-msg">Server communication error.</p>';
+  } finally {
+    previewSourceBtn.disabled = false;
   }
 }
 

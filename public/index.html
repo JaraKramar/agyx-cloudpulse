@@ -260,8 +260,13 @@
               <input type="text" id="sourceSelector" placeholder="article">
             </div>
 
-            <button type="submit" class="primary-btn submit-btn">Add Source</button>
+            <div class="form-row">
+              <button type="button" class="primary-btn submit-btn" id="previewSourceBtn">Preview</button>
+              <button type="submit" class="primary-btn submit-btn">Add Source</button>
+            </div>
           </form>
+
+          <div class="preview-results hidden" id="previewResults"></div>
         </div>
 
         <!-- Sources List -->
